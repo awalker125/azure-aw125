@@ -1,0 +1,69 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"storageAccount_prefix": {
+			"type": "string",
+			"maxLength": 11
+		},
+		"storageAccount_accountType": {
+			"defaultValue": "Standard_RAGRS",
+			"type": "string",
+			"allowedValues": [
+				"Standard_LRS", "Standard_ZRS", "Standard_GRS", "Standard_RAGRS", "Premium_LRS"
+			]
+		},
+		"virtualNetwork_name": {
+			"type": "string"
+		},
+		"addressPrefix": {
+			"defaultValue": "10.0.0.0/16",
+			"type": "string"
+		},
+		"subnetName": {
+			"defaultValue": "subnet-1",
+			"type": "string"
+		},
+		"subnetAddressPrefix": {
+			"defaultValue": "10.0.0.0/24",
+			"type": "string"
+		}
+	},
+	"variables": {},
+	"resources": [
+		{
+			"comments": "Generalized from resource in walkthrough.",
+			"type": "Microsoft.Network/virtualNetworks",
+			"name": "[parameters('virtualNetworks_VNET_name')]",
+			"apiVersion": "2015-06-15",
+			"location": "northeurope",
+			"properties": {
+				"addressSpace": {
+					"addressPrefixes": [
+						"10.0.0.0/16"
+					]
+				},
+				"subnets": [
+					{
+						"name": "default",
+						"properties": {
+							"addressPrefix": "10.0.0.0/24"
+						}
+					}
+				]
+			},
+			"dependsOn": []
+	}, {
+		"comments": "Generalized from resource in walkthrough.",
+		"type": "Microsoft.Storage/storageAccounts",
+		"name": "[parameters('storageAccounts_storagetf05092016_name')]",
+		"apiVersion": "2015-06-15",
+		"location": "northeurope",
+		"tags": {},
+		"properties": {
+			"accountType": "Standard_RAGRS"
+		},
+		"dependsOn": []
+}
+]
+}

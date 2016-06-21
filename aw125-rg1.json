@@ -1,0 +1,85 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"projectName": {
+			"type": "string",
+			"maxLength": 5
+		},
+		"customerName": {
+			"type": "string",
+			"maxLength": 5
+		},
+		"envName": {
+			"type": "string",
+			"maxLength": 4,
+			"allowedValues": [
+				"prod", "dev", "test"
+			]
+		},
+		"envId": {
+			"type": "string",
+			"maxLength": 3
+		},
+		"storageAccount_prefix": {
+			"type": "string",
+			"maxLength": 11
+		},
+		"storageAccount_accountType": {
+			"defaultValue": "Standard_LRS",
+			"type": "string",
+			"allowedValues": [
+				"Standard_LRS", "Standard_ZRS", "Standard_GRS", "Standard_RAGRS", "Premium_LRS"
+			]
+		},
+		"addressPrefix": {
+			"defaultValue": "10.0.0.0/16",
+			"type": "string"
+		},
+		"subnetName": {
+			"defaultValue": "subnet-1",
+			"type": "string"
+		},
+		"subnetAddressPrefix": {
+			"defaultValue": "10.0.0.0/24",
+			"type": "string"
+		}
+	},
+	"variables": {
+		"storageAccount_name": "[concat(parameters('storageAccount_prefix'), uniqueString(resourceGroup().id))]",
+		"virtualNetwork_name": "[concat(parameters('projectName),'-', uniqueString(resourceGroup().id))]"
+	},
+	"resources": [
+		{
+			"type": "Microsoft.Network/virtualNetworks",
+			"name": "[variables('virtualNetwork_name')]",
+			"apiVersion": "2015-06-15",
+			"location": "[resourceGroup().location]",
+			"properties": {
+				"addressSpace": {
+					"addressPrefixes": [
+						"[parameters('addressPrefix')]"
+					]
+				},
+				"subnets": [
+					{
+						"name": "[parameters('subnetName')]",
+						"properties": {
+							"addressPrefix": "[parameters('subnetAddressPrefix')]"
+						}
+					}
+				]
+			},
+			"dependsOn": []
+	}, {
+		"type": "Microsoft.Storage/storageAccounts",
+		"name": "[variables('storageAccountName')]",
+		"apiVersion": "2015-06-15",
+		"location": "[resourceGroup().location]",
+		"properties": {
+			"accountType": "[parameters('storageAccount_accountType')]"
+		},
+		"dependsOn": []
+}
+]
+}
